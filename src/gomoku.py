@@ -1,9 +1,18 @@
 TABLE_SIZE = 14
 EMPTY = '-'
 
+
 class Gomoku:
     def __init__(self):
-        self.table = [ [ EMPTY for i in range(self.TABLE_SIZE + 1) ] for j in range(self.TABLE_SIZE + 1) ]
+        self.table = [[EMPTY for i in range(TABLE_SIZE + 1)]
+                      for j in range(TABLE_SIZE + 1)]
+
+    def serialize(self):
+        s = ''
+        for line in self.table:
+            for entry in line:
+                s += entry
+        return s
 
     def horizontal_win(self, player, play):
         line = self.table[play.line]
@@ -12,7 +21,7 @@ class Gomoku:
         for column in range(play.column - 4, play.column + 5):
             if column < 0:
                 continue
-            if column > self.TABLE_SIZE or streak == 5:
+            if column > TABLE_SIZE or streak == 5:
                 break
 
             if column == play.column or line[column] == player:
@@ -22,13 +31,13 @@ class Gomoku:
 
         return streak == 5
 
-    def vertical_win(self,player, play):
+    def vertical_win(self, player, play):
         streak = 0
 
         for line in range(play.line - 4, play.line + 5):
             if line < 0:
                 continue
-            if line > self.TABLE_SIZE or streak == 5:
+            if line > TABLE_SIZE or streak == 5:
                 break
 
             if play.line == line or self.table[line][play.column] == player:
@@ -38,15 +47,15 @@ class Gomoku:
 
         return streak == 5
 
-    def left_diagonal_win(self,player, play):
+    def left_diagonal_win(self, player, play):
         streak = 0
-        for offset in range(-4,5):
+        for offset in range(-4, 5):
             line = play.line - offset
             column = play.column + offset
 
             if line < 0 or column < 0:
                 continue
-            if line > self.TABLE_SIZE or column > self.TABLE_SIZE or streak == 5:
+            if line > TABLE_SIZE or column > TABLE_SIZE or streak == 5:
                 break
 
             if offset == 0 or self.table[line][column] == player:
@@ -58,13 +67,13 @@ class Gomoku:
 
     def right_diagonal_win(self, player, play):
         streak = 0
-        for offset in range(-4,5):
+        for offset in range(-4, 5):
             line = play.line + offset
             column = play.column + offset
 
             if line < 0 or column < 0:
                 continue
-            if line > self.TABLE_SIZE or column > self.TABLE_SIZE or streak == 5:
+            if line > TABLE_SIZE or column > TABLE_SIZE or streak == 5:
                 break
 
             if offset == 0 or self.table[line][column] == player:
@@ -74,11 +83,11 @@ class Gomoku:
 
         return streak == 5
 
-    def diagonal_win(self,player, play):
+    def diagonal_win(self, player, play):
         return self.left_diagonal_win(player, play) \
             or self.right_diagonal_win(player, play)
 
-    def check(self,player, play):
+    def check(self, player, play):
         return self.vertical_win(player, play) \
             or self.horizontal_win(player, play) \
             or self.diagonal_win(player, play)
