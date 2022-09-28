@@ -15,16 +15,19 @@ class Gomoku:
         return s
 
     def horizontal_win(self, player, play):
-        line = self.table[play.line]
+
+        play_line = int(play.line)
+        play_column = int(play.column)
+        line = self.table[play_line]
         streak = 0
 
-        for column in range(play.column - 4, play.column + 5):
+        for column in range(play_column - 4, play_column + 5):
             if column < 0:
                 continue
             if column > TABLE_SIZE or streak == 5:
                 break
 
-            if column == play.column or line[column] == player:
+            if column == play_column or line[column] == player:
                 streak += 1
             else:
                 streak = 0
@@ -34,13 +37,15 @@ class Gomoku:
     def vertical_win(self, player, play):
         streak = 0
 
-        for line in range(play.line - 4, play.line + 5):
+        play_line = int(play.line)
+        play_column = int(play.column)
+        for line in range(play_line - 4, play_line + 5):
             if line < 0:
                 continue
             if line > TABLE_SIZE or streak == 5:
                 break
 
-            if play.line == line or self.table[line][play.column] == player:
+            if play.line == line or self.table[line][play_column] == player:
                 streak += 1
             else:
                 streak = 0
@@ -50,8 +55,8 @@ class Gomoku:
     def left_diagonal_win(self, player, play):
         streak = 0
         for offset in range(-4, 5):
-            line = play.line - offset
-            column = play.column + offset
+            line = int(play.line) - offset
+            column = int(play.column) + offset
 
             if line < 0 or column < 0:
                 continue
@@ -68,8 +73,8 @@ class Gomoku:
     def right_diagonal_win(self, player, play):
         streak = 0
         for offset in range(-4, 5):
-            line = play.line + offset
-            column = play.column + offset
+            line = int(play.line) + offset
+            column = int(play.column) + offset
 
             if line < 0 or column < 0:
                 continue
@@ -92,15 +97,19 @@ class Gomoku:
             or self.horizontal_win(player, play) \
             or self.diagonal_win(player, play)
 
-    def play(self, player, play):
+    def play(self, play):
         result = 0
 
-        if self.table[play.line][play.column] != EMPTY:
+        line = int(play.line)
+        column = int(play.column)
+
+        if line < 0 or line > 14 or column < 0 or column > 14 \
+                or self.table[line][column] != EMPTY:
             result = -1
         else:
-            if self.check(player, play):
+            if self.check(play.player, play):
                 result = 1
 
-            self.table[play.line][play.column] = player
+            self.table[line][column] = play.player
 
         return result
